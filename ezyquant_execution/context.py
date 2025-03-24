@@ -716,6 +716,8 @@ def _is_pending_order(order: EquityOrder) -> bool:
         order.balance > 0
         and "Expired" not in order.show_order_status
         and "Canceled" not in order.show_order_status
+        and "Expired" not in order.show_order_status_meaning
+        and "Canceled" not in order.show_order_status_meaning
     )
     # return order.can_cancel # This not work because GTC order can't cancel after market close
     # return order.balance > 0 # This not work because Expired order still have balance > 0
