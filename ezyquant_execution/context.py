@@ -714,10 +714,10 @@ class ExecuteContextSymbol(ExecuteContext):
 def _is_pending_order(order: EquityOrder) -> bool:
     return (
         order.balance > 0
-        and "Expired" not in order.show_order_status
-        and "Canceled" not in order.show_order_status
-        and "Expired" not in order.show_order_status_meaning
-        and "Canceled" not in order.show_order_status_meaning
+        and "expired" not in order.show_order_status.lower()
+        and "cancelled" not in order.show_order_status.lower()
+        and "expired" not in order.show_order_status_meaning.lower()
+        and "cancelled" not in order.show_order_status_meaning.lower()
     )
     # return order.can_cancel # This not work because GTC order can't cancel after market close
     # return order.balance > 0 # This not work because Expired order still have balance > 0
