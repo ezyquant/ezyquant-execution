@@ -166,7 +166,7 @@ class StockQuoteResponse(SettradeStruct):
     implied_volatility: float
     exchange: str
     aum_size: float
-    inav: float
+    i_nav: float
 
 
 # Market Section
