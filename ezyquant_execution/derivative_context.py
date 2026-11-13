@@ -146,14 +146,6 @@ class ExecuteDerivativeContext:
         """
         return self.get_portfolios().total_portfolio.market_value
 
-    # @property
-    # def pending_order_value(self) -> float:
-    #     """Sum of all pending order value.
-
-    #     Not include commission.
-    #     """
-    #     return sum(i.price * i.vol for i in self.get_orders(_is_pending_order))
-
     @property
     def port_value(self) -> float:
         """Total portfolio value. (equity value)"""
@@ -204,6 +196,8 @@ class ExecuteDerivativeContext:
     ) -> List[CancelOrder]:  # List[str] -> List[int]
         if not order_no_list:
             return []
+
+        logger.info(f"Cancel orders {self.account_no} {len(order_no_list)} orders")
 
         res = self._settrade_derivative.cancel_orders(
             order_no_list=order_no_list, **self._pin_acc_no_kw
@@ -313,7 +307,8 @@ class ExecuteDerivativeContext:
         trigger_session: Optional[TRIGGER_SESSION] = None,
         bypass_warning: Optional[bool] = True,
     ) -> Optional[DerivativeOrder]:
-        logger.info(f"Place order: {side} {symbol} {volume} {price}")
+
+        logger.info(f"Place order {self.account_no} {side} {symbol} {volume} {price}")
 
         res = self._settrade_derivative.place_order(
             symbol=symbol,
@@ -641,9 +636,3 @@ class ExecuteDerivativeContextSymbol(ExecuteDerivativeContext):
         return super()._filter_list(
             l, lambda x: x.symbol == self.symbol and condition(x)
         )
-
-
-def _is_pending_order(order: DerivativeOrder) -> bool:
-    return order.balance_qty > 0 and "Expired" not in order.show_status
-    # return order.can_cancel # This not work because GTC order can't cancel after market close
-    # return order.balance > 0 # This not work because Expired order still have balance > 0
