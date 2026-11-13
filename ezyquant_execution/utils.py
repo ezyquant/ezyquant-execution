@@ -138,12 +138,14 @@ Price
 @lru_cache(maxsize=1)
 def _price_array() -> np.ndarray:
     # https://classic.set.or.th/en/products/trading/equity/tradingsystem_p5.html
+    # Tick size revision: ticks below 50 THB are finer than before.
+    # 5-10: 0.05 -> 0.02, 10-25: 0.1 -> 0.05, 25-50: 0.25 -> 0.1. Rest unchanged.
     ranges = [
         (0.01, 2, 0.01),
-        (2, 5, 0.02),
-        (5, 10, 0.05),
-        (10, 25, 0.1),
-        (25, 100, 0.25),
+        (2, 10, 0.02),
+        (10, 25, 0.05),
+        (25, 50, 0.1),
+        (50, 100, 0.25),
         (100, 200, 0.5),
         (200, 400, 1),
         (400, 800, 2),
