@@ -49,3 +49,26 @@ class TestStruct:
 def test_filter_list(ctx: ExecuteContext, l: list, condition: Callable, expected: list):
     result = ctx._filter_list(l, condition=condition)
     assert result == expected
+
+
+@pytest.mark.parametrize(
+    ("balance", "status", "meaning", "expected"),
+    [
+        (100, "Queuing", "Queuing", True),
+        (100, "Pending(OF)", "Pending", True),
+        (0, "Queuing", "Queuing", False),
+        (100, "Expired", "Expired", False),
+        (100, "Cancelled", "Cancelled by user", False),
+        (100, "Rejected", "Rejected", False),
+        (100, "Rejected(SET)", "Order rejected", False),
+    ],
+)
+def test_is_pending_order(balance: int, status: str, meaning: str, expected: bool):
+    from types import SimpleNamespace
+
+    from ezyquant_execution.context import _is_pending_order
+
+    order = SimpleNamespace(
+        balance=balance, show_order_status=status, show_order_status_meaning=meaning
+    )
+    assert _is_pending_order(order) is expected  # type: ignore[arg-type]

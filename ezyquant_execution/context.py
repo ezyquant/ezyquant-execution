@@ -718,6 +718,10 @@ def _is_pending_order(order: EquityOrder) -> bool:
         and "cancelled" not in order.show_order_status.lower()
         and "expired" not in order.show_order_status_meaning.lower()
         and "cancelled" not in order.show_order_status_meaning.lower()
+        # Rejected order keeps balance > 0 but never reserves line available,
+        # counting it inflates pending_buy_order_value and port_value.
+        and "reject" not in order.show_order_status.lower()
+        and "reject" not in order.show_order_status_meaning.lower()
     )
     # return order.can_cancel # This not work because GTC order can't cancel after market close
     # return order.balance > 0 # This not work because Expired order still have balance > 0
